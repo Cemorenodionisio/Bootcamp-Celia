@@ -77,3 +77,4 @@ pipeline {
             echo "Pipeline fallido ❌"
         }
     }
+} // <-- llave final que faltaba
