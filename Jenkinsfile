@@ -64,6 +64,13 @@ pipeline {
                 echo "VAR_BOOL es true, este stage se ejecuta"
             }
         }
+
+        stage('Ejecutar Python') {
+            steps {
+                echo "Ejecutando python.py..."
+                sh 'python3 python.py'
+            }
+        }
     }
 
     post {
@@ -77,4 +84,5 @@ pipeline {
             echo "Pipeline fallido ❌"
         }
     }
-} // <-- llave final que faltaba
+} 
+
