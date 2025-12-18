@@ -72,15 +72,16 @@ pipeline {
                     export NOMBRE="${NOMBRE}"
                     export VAR_CHOICE="${VAR_CHOICE}"
 
-                    echo "Valor del parámetro ARCHIVO: '$ARCHIVO'"
-                    echo "Archivos en workspace:"
-                    ls -l
+                    echo "Ruta real del archivo recibido: $ARCHIVO"
 
-                    if [ -n "$ARCHIVO" ] && [ -f "$ARCHIVO" ]; then
-                        echo "Ejecutando Python con archivo de entrada..."
-                        python3 python.py "$ARCHIVO"
+                    if [ -n "$ARCHIVO" ]; then
+                        echo "Copiando archivo al workspace"
+                        cp "$ARCHIVO" entrada.txt
+                        echo "Archivos en workspace:"
+                        ls -l
+                        python3 python.py entrada.txt
                     else
-                        echo "No se ha subido archivo (o no existe). Ejecuto sin fichero."
+                        echo "No se ha subido archivo. Ejecuto sin fichero."
                         python3 python.py
                     fi
                 '''
