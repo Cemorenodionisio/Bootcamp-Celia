@@ -35,7 +35,11 @@ pipeline {
     }
 
     stages {
-
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
         stage('Info inicial') {
             steps {
                 echo "Hola, ${params.NOMBRE}"
@@ -85,12 +89,6 @@ pipeline {
                         python3 python.py
                     fi
                 '''
-            }
-        }
-
-        stage('Checkout') {
-            steps {
-                checkout scm
             }
         }
 
