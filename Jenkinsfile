@@ -19,6 +19,10 @@ pipeline {
             defaultValue: true,
             description: 'Parámetro booleano'
         )
+        file(
+            name: 'ARCHIVO',
+            description: 'Archivo de entrada para Python'
+        )
     }
 
     environment {
@@ -62,7 +66,7 @@ pipeline {
                     . $VENV/bin/activate           
                     export NOMBRE=${NOMBRE}        
                     export VAR_CHOICE=${VAR_CHOICE}
-                    python3 python.py            
+                    python3 python.py ${ARCHIVO}          
                 '''
             }
         }
