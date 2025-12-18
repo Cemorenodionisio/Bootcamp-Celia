@@ -10,7 +10,7 @@ pipeline {
 
         choice(
             name: 'VAR_CHOICE',
-            choices: ['Primera opción', 'Segunda opción', 'Tercera opción'],
+            choices: ['Primera opción', 'Segunda opción'],
             description: 'Parámetro choice'
         )
 
