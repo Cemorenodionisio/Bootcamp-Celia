@@ -66,7 +66,7 @@ pipeline {
                     . $VENV/bin/activate           
                     export NOMBRE=${NOMBRE}        
                     export VAR_CHOICE=${VAR_CHOICE}
-                    python3 python.py ${ARCHIVO}          
+                    python3 python.py "${ARCHIVO}"          
                 '''
             }
         }
