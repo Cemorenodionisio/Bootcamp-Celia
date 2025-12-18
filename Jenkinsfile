@@ -62,28 +62,12 @@ pipeline {
 
         stage('Ejecutar Python') {
             steps {
-                script {
-                    if (params.ARCHIVO) {
-                        sh '''
-                            . $VENV/bin/activate
-                            export NOMBRE="${params.NOMBRE}"
-                            export VAR_CHOICE="${params.VAR_CHOICE}"
-                            echo "Archivo recibido: ${params.ARCHIVO}"
-                            python3 python.py "${params.ARCHIVO}"
-                        '''
-                    } else {
-                        error "No se ha subido ningún archivo para el parámetro ARCHIVO"
-                    }
-                }
-            }
-        }
-
-
-        stage('Crear archivo de prueba') {
-            steps {
                 sh '''
-                    echo "hola gente" >> test.txt 
-                    echo "Archivo creado"
+                    . $VENV/bin/activate
+                    export NOMBRE="${NOMBRE}"
+                    export VAR_CHOICE="${VAR_CHOICE}"
+                    # Pasar el archivo cargado como argumento
+                    python3 python.py "${ARCHIVO}"
                 '''
             }
         }
