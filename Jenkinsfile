@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    options {
+    skipDefaultCheckout()
+    }
 
     parameters {
         string(
@@ -30,6 +33,11 @@ pipeline {
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
 
         stage('Info inicial') {
             steps {
