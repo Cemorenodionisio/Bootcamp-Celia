@@ -3,9 +3,9 @@ pipeline {
 
     parameters {
         string(
-            name: 'VAR_STR',
-            defaultValue: 'Valor por defecto',
-            description: 'Parámetro string'
+            name: 'NOMBRE',
+            defaultValue: 'Celia Moreno Dionisio',
+            description: 'Nombre del propietario'
         )
 
         choice(
@@ -21,68 +21,97 @@ pipeline {
         )
     }
 
+    environment {
+        VENV = "venv"
+    }
+
     stages {
 
-        stage('Primer pasito') {
+        stage('Info inicial') {
             steps {
-                echo "Valor de VAR_STR: ${params.VAR_STR}"
+                echo "Hola, ${params.NOMBRE}"          
+                echo "El nombre del Pipeline de Jenkins es: ${env.JOB_NAME}"       
+                echo "El número de ejecución: ${env.BUILD_NUMBER}"    
+                echo "Carpeta donde Jenkins ejecuta tu pipeline: ${env.WORKSPACE}"     
                 echo "Opción elegida: ${params.VAR_CHOICE}"
             }
         }
 
-        stage('Segundo pasito') {
+        stage('Crear entorno virtual') {
             steps {
                 sh '''
-                    echo "hola gente" >> test.txt
+                    python3 -m venv $VENV  
+                    . $VENV/bin/activate           
+                    python -m pip install --upgrade pip  
+                '''
+            }
+        }
+
+        stage('Instalar requirements.txt') {
+            steps {
+                sh '''
+                    . $VENV/bin/activate 
+                    pip install -r requirements.txt  
+                '''
+            }
+        }
+
+        stage('Ejecutar Python') {
+            steps {
+                sh '''
+                    . $VENV/bin/activate           
+                    export NOMBRE=${NOMBRE}        
+                    export VAR_CHOICE=${VAR_CHOICE}
+                    python3 python.py            
+                '''
+            }
+        }
+
+        stage('Crear archivo de prueba') {
+            steps {
+                sh '''
+                    echo "hola gente" >> test.txt 
                     echo "Archivo creado"
                 '''
             }
         }
 
-        stage('Tercer pasito (credenciales)') {
+        stage('Credenciales') {
             steps {
                 withCredentials([
                     usernamePassword(
-                        credentialsId: 'Celia_credencial',
-                        usernameVariable: 'USER',
+                        credentialsId: 'Celia_credencial', 
+                        usernameVariable: 'USER', 
                         passwordVariable: 'PASS'
                     )
                 ]) {
                     sh '''
-                        echo "Usuario: $USER"
+                        echo "Usuario: $USER"        
                         echo "Password oculto correctamente"
                     '''
                 }
             }
         }
 
-        stage('Cuarto pasito (condicional)') {
+        stage('Condicional') {
             when {
-                expression { params.VAR_BOOL }
+                expression { params.VAR_BOOL }       
             }
             steps {
-                echo "VAR_BOOL es true, este stage se ejecuta"
-            }
-        }
-
-        stage('Ejecutar Python') {
-            steps {
-                echo "Ejecutando python.py..."
-                sh 'python3 python.py'
+                echo "VAR_BOOL es true, se ejecuta este stage"
             }
         }
     }
 
     post {
         always {
-            echo "Pipeline finalizado"
+            echo "Pipeline finalizado."
         }
         success {
-            echo "Pipeline exitoso ✅"
+            echo "Se ha realizado el pipeline correctamente"
         }
         failure {
-            echo "Pipeline fallido ❌"
+            echo "Algo ha fallado"
         }
     }
-} 
-
+}
