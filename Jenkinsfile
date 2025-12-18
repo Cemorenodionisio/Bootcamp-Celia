@@ -66,11 +66,23 @@ pipeline {
                     . $VENV/bin/activate
                     export NOMBRE="${NOMBRE}"
                     export VAR_CHOICE="${VAR_CHOICE}"
-                    # Pasar el archivo cargado como argumento
-                    python3 python.py "${ARCHIVO}"
+
+                    echo "Valor del parámetro ARCHIVO: '$ARCHIVO'"
+                    echo "Archivos en workspace:"
+                    ls -l
+
+                    # Comprobar si se subió archivo
+                    if [ -n "$ARCHIVO" ] && [ -f "$ARCHIVO" ]; then
+                        echo "Ejecutando Python con archivo de entrada..."
+                        python3 python.py "$ARCHIVO"
+                    else
+                        echo "No se ha subido archivo (o no existe). Ejecuto sin fichero."
+                        python3 python.py
+                    fi
                 '''
             }
         }
+
 
         stage('Credenciales') {
             steps {
