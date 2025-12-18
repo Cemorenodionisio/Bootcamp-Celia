@@ -1,7 +1,8 @@
 pipeline {
     agent any
+
     options {
-    skipDefaultCheckout()
+        skipDefaultCheckout()
     }
 
     parameters {
@@ -22,6 +23,7 @@ pipeline {
             defaultValue: true,
             description: 'Parámetro booleano'
         )
+
         file(
             name: 'ARCHIVO',
             description: 'Archivo de entrada para Python'
@@ -33,18 +35,13 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
 
         stage('Info inicial') {
             steps {
-                echo "Hola, ${params.NOMBRE}"          
-                echo "El nombre del Pipeline de Jenkins es: ${env.JOB_NAME}"       
-                echo "El número de ejecución: ${env.BUILD_NUMBER}"    
-                echo "Carpeta donde Jenkins ejecuta tu pipeline: ${env.WORKSPACE}"     
+                echo "Hola, ${params.NOMBRE}"
+                echo "El nombre del Pipeline de Jenkins es: ${env.JOB_NAME}"
+                echo "El número de ejecución: ${env.BUILD_NUMBER}"
+                echo "Carpeta donde Jenkins ejecuta tu pipeline: ${env.WORKSPACE}"
                 echo "Opción elegida: ${params.VAR_CHOICE}"
             }
         }
@@ -52,9 +49,9 @@ pipeline {
         stage('Crear entorno virtual') {
             steps {
                 sh '''
-                    python3 -m venv $VENV  
-                    . $VENV/bin/activate           
-                    python -m pip install --upgrade pip  
+                    python3 -m venv $VENV
+                    . $VENV/bin/activate
+                    python -m pip install --upgrade pip
                 '''
             }
         }
@@ -62,8 +59,8 @@ pipeline {
         stage('Instalar requirements.txt') {
             steps {
                 sh '''
-                    . $VENV/bin/activate 
-                    pip install -r requirements.txt  
+                    . $VENV/bin/activate
+                    pip install -r requirements.txt
                 '''
             }
         }
@@ -79,7 +76,6 @@ pipeline {
                     echo "Archivos en workspace:"
                     ls -l
 
-                    # Comprobar si se subió archivo
                     if [ -n "$ARCHIVO" ] && [ -f "$ARCHIVO" ]; then
                         echo "Ejecutando Python con archivo de entrada..."
                         python3 python.py "$ARCHIVO"
@@ -91,18 +87,23 @@ pipeline {
             }
         }
 
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
 
         stage('Credenciales') {
             steps {
                 withCredentials([
                     usernamePassword(
-                        credentialsId: 'Celia_credencial', 
-                        usernameVariable: 'USER', 
+                        credentialsId: 'Celia_credencial',
+                        usernameVariable: 'USER',
                         passwordVariable: 'PASS'
                     )
                 ]) {
                     sh '''
-                        echo "Usuario: $USER"        
+                        echo "Usuario: $USER"
                         echo "Password oculto correctamente"
                     '''
                 }
@@ -111,7 +112,7 @@ pipeline {
 
         stage('Condicional') {
             when {
-                expression { params.VAR_BOOL }       
+                expression { params.VAR_BOOL }
             }
             steps {
                 echo "VAR_BOOL es true, se ejecuta este stage"
