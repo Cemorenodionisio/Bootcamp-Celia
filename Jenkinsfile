@@ -66,10 +66,10 @@ pipeline {
                     if (params.ARCHIVO) {
                         sh '''
                             . $VENV/bin/activate
-                            export NOMBRE="${NOMBRE}"
-                            export VAR_CHOICE="${VAR_CHOICE}"
-                            echo "Archivo recibido: ${ARCHIVO}"
-                            python3 python.py "${ARCHIVO}"
+                            export NOMBRE="${params.NOMBRE}"
+                            export VAR_CHOICE="${params.VAR_CHOICE}"
+                            echo "Archivo recibido: ${params.ARCHIVO}"
+                            python3 python.py "${params.ARCHIVO}"
                         '''
                     } else {
                         error "No se ha subido ningún archivo para el parámetro ARCHIVO"
